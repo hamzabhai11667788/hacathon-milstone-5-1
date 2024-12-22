@@ -12,7 +12,7 @@ form.addEventListener("submit", function (event) {
     var exprience = document.getElementById("exprience").value;
     var skills = document.getElementById("skills").value;
     // Generated the resume conduct dynamically
-    var resumeHTML = "<h2><b>Resume</b></h2>\n       <h3>Personel Information</h3>\n       <p><b>Name</b>".concat(name, "</p>\n        <p><b>email</b>").concat(email, "</p>\n         <p><b>phone</b>").concat(phone, "</p>\n         \n         <h3>Education</h3>\n         <p>").concat(education, "</p>\n         \n         <h3>Exprience</h3>\n         <p>").concat(exprience, "</p>\n         \n         <h3>Skills</h3>\n         <p>").concat(skills, "</p>");
+    var resumeHTML = "<h2><b>Editable Resume</b></h2>\n       <h3>Personel Information</h3>\n       <p><b>Name</b><span contenteditable=\"true\">".concat(name, "</span></p>\n        <p><b>email</b><span contenteditable=\"true\">").concat(email, "</span></p>\n         <p><b>phone</b><span contenteditable=\"true\">").concat(phone, "</span></p>\n         \n         <h3>Education</h3>\n         <p contenteditable=\"true\">").concat(education, "</p>\n         \n         <h3>Exprience</h3>\n         <p contenteditable=\"true\">").concat(exprience, "</p>\n         \n         <h3>Skills</h3>\n         <p contenteditable=\"true\">").concat(skills, "</p>");
     //display the generated resume
     if (resumeDisplayElement) {
         resumeDisplayElement.innerHTML = resumeHTML;
