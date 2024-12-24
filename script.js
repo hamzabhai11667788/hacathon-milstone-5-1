@@ -1,23 +1,64 @@
-// Get reference to the form and display area 
-var form = document.getElementById("resume-form");
-var resumeDisplayElement = document.getElementById("resume-display");
-//Handle form submition
-form.addEventListener("submit", function (event) {
-    event.preventDefault(); //prevent page related
-    //collect input value;
-    var name = document.getElementById("name").value;
-    var email = document.getElementById("email").value;
-    var phone = document.getElementById("phone").value;
-    var education = document.getElementById("education").value;
-    var exprience = document.getElementById("exprience").value;
-    var skills = document.getElementById("skills").value;
-    // Generated the resume conduct dynamically
-    var resumeHTML = "<h2><b>Editable Resume</b></h2>\n       <h3>Personel Information</h3>\n       <p><b>Name</b><span contenteditable=\"true\">".concat(name, "</span></p>\n        <p><b>email</b><span contenteditable=\"true\">").concat(email, "</span></p>\n         <p><b>phone</b><span contenteditable=\"true\">").concat(phone, "</span></p>\n         \n         <h3>Education</h3>\n         <p contenteditable=\"true\">").concat(education, "</p>\n         \n         <h3>Exprience</h3>\n         <p contenteditable=\"true\">").concat(exprience, "</p>\n         \n         <h3>Skills</h3>\n         <p contenteditable=\"true\">").concat(skills, "</p>");
-    //display the generated resume
-    if (resumeDisplayElement) {
-        resumeDisplayElement.innerHTML = resumeHTML;
+// Get references to the form and display area
+var form = document.getElementById('resume-form');
+var resumeDisplayElement = document.getElementById('resume-display');
+var shareableLinkContainer = document.getElementById('shareable-link-container');
+var shareableLinkElement = document.getElementById('shareable-link');
+var downloadPdfButton = document.getElementById('download-pdf');
+// Ensure essential elements exist
+if (!form || !resumeDisplayElement || !shareableLinkContainer || !shareableLinkElement || !downloadPdfButton) {
+    console.error("Some DOM elements are missing. Please check your HTML structure.");
+    throw new Error("Required DOM elements not found.");
+}
+// Handle form submission
+form.addEventListener('submit', function (event) {
+    event.preventDefault(); // prevent page reload
+    // Collect input values
+    var username = document.getElementById('username').value.trim();
+    var name = document.getElementById('name').value.trim();
+    var email = document.getElementById('email').value.trim();
+    var phone = document.getElementById('phone').value.trim();
+    var education = document.getElementById('education').value.trim();
+    var experience = document.getElementById('experience').value.trim();
+    var skills = document.getElementById('skills').value.trim();
+    // Ensure username is provided
+    if (!username) {
+        alert("Please provide a username to generate a shareable link.");
+        return;
     }
-    else {
-        console.error('the resume display  element is missing.');
+    // Save form data in localStorage with the username as the key
+    var resumeData = { name: name, email: email, phone: phone, education: education, experience: experience, skills: skills };
+    localStorage.setItem(username, JSON.stringify(resumeData));
+    // Generate the resume content dynamically
+    var resumeHTML = "\n        <h2>Editable Resume</h2>\n        <h3>Personal Information</h3>\n        <p><b>Name:</b> <span contenteditable=\"true\">".concat(name, "</span></p>\n        <p><b>Email:</b> <span contenteditable=\"true\">").concat(email, "</span></p>\n        <p><b>Phone:</b> <span contenteditable=\"true\">").concat(phone, "</span></p>\n        <h3>Education</h3>\n        <p contenteditable=\"true\">").concat(education, "</p>\n        <h3>Experience</h3>\n        <p contenteditable=\"true\">").concat(experience, "</p>\n        <h3>Skills</h3>\n        <p contenteditable=\"true\">").concat(skills, "</p>\n    ");
+    // Display the generated resume
+    resumeDisplayElement.innerHTML = resumeHTML;
+    // Generate a shareable URL with the username
+    var shareableURL = "".concat(window.location.origin, "?username=").concat(encodeURIComponent(username));
+    // Display the shareable link
+    shareableLinkContainer.style.display = 'block';
+    shareableLinkElement.href = shareableURL;
+    shareableLinkElement.textContent = shareableURL;
+});
+// Handle PDF download
+downloadPdfButton.addEventListener('click', function () {
+    window.print(); // Opens print dialog
+});
+// Prefill the form based on the username in the URL
+window.addEventListener('DOMContentLoaded', function () {
+    var urlParams = new URLSearchParams(window.location.search);
+    var username = urlParams.get('username');
+    if (username) {
+        // Autofill form if data is found in localStorage
+        var savedResumeData = localStorage.getItem(username);
+        if (savedResumeData) {
+            var resumeData = JSON.parse(savedResumeData);
+            document.getElementById('username').value = username;
+            document.getElementById('name').value = resumeData.name || '';
+            document.getElementById('email').value = resumeData.email || '';
+            document.getElementById('phone').value = resumeData.phone || '';
+            document.getElementById('education').value = resumeData.education || '';
+            document.getElementById('experience').value = resumeData.experience || '';
+            document.getElementById('skills').value = resumeData.skills || '';
+        }
     }
 });
